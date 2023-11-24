@@ -1,4 +1,5 @@
 import { Book } from '@/app/lib/definitions'
+import { notFound } from 'next/navigation'
 import Image from 'next/image'
 
 interface Props {
@@ -8,11 +9,13 @@ interface Props {
 }
 
 async function getBook(isbn: string): Promise<Book> {
-  // isbn이 없으면
   const res = await fetch(`https://api.itbook.store/1.0/books/${isbn}`)
 
   if (!res.ok) {
-    throw new Error('Failed to fetch data')
+    if (res.status.toString().startsWith('4')) {
+      notFound()
+    }
+    throw new Error(res.statusText)
   }
 
   return res.json()
@@ -31,7 +34,7 @@ export default async function Book({ params: { isbn } }: Props) {
     price,
   } = await getBook(isbn)
   return (
-    <main className="max-w-5xl m-auto py-12">
+    <main>
       <h1 className="text-center">{title}</h1>
       <div className="relative h-[300px]">
         <Image
