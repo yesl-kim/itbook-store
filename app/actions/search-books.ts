@@ -9,6 +9,13 @@ const includesByIsbn = (books: BooksItem[], isbn: string) =>
 const difference = (a: BooksItem[], b: BooksItem[]) =>
   a.filter(({ isbn13 }) => !includesByIsbn(b, isbn13))
 
+// (a - b) + b
+const union = (arr: BooksResponse[]) =>
+  arr.reduce(
+    (acc, { books }) => difference(acc, books).concat(books),
+    [] as BooksItem[]
+  )
+
 const getBooks = async (query: string, page = 1): Promise<BooksResponse> => {
   const res = await fetch(`${HOST}/search/${query}/${page}`)
   if (!res.ok) {
@@ -18,27 +25,23 @@ const getBooks = async (query: string, page = 1): Promise<BooksResponse> => {
   return res.json()
 }
 
-// TODO: 리팩토링
 export const searchBooks = async (
   includedKeywords: string[],
-  nonIncludedKeyword?: string
+  nonIncludedKeyword?: string[]
 ) => {
-  const includedBooks = includedKeywords.map((k) => getBooks(k))
+  const included = await Promise.all(includedKeywords.map((k) => getBooks(k)))
+  const includedBooks = union(included)
 
-  // 맞긴 하지만
-  // nonIncludedKeyword가 있을 때 includedKeywords가 하나일 거라는 걸 믿고 잇어
-  if (nonIncludedKeyword) {
-    const nonIncluded = await getBooks(nonIncludedKeyword)
-    const books = (await Promise.all(includedBooks)).flatMap(({ books }) =>
-      difference(books, nonIncluded.books)
-    )
-    return books
-  } else {
-    const res = await Promise.all(includedBooks)
-    const books = (await Promise.all(includedBooks)).reduce(
-      (acc, { books }) => difference(acc, books).concat(books),
-      [] as BooksItem[]
-    )
-    return books
+  if (!nonIncludedKeyword || nonIncludedKeyword.length === 0) {
+    return includedBooks
   }
+
+  const nonIncluded = await Promise.all(
+    nonIncludedKeyword.map((k) => getBooks(k))
+  )
+  const nonIncludedBooks = union(nonIncluded)
+
+  return includedBooks.filter(
+    ({ isbn13 }) => !includesByIsbn(nonIncludedBooks, isbn13)
+  )
 }
