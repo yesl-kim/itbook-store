@@ -1,4 +1,3 @@
-import { Book } from '@/app/lib/definitions'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 
@@ -21,7 +20,7 @@ async function getBook(isbn: string): Promise<Book> {
   return res.json()
 }
 
-export default async function Book({ params: { isbn } }: Props) {
+const BookPage = async ({ params: { isbn } }: Props) => {
   const {
     title,
     subtitle,
@@ -33,6 +32,7 @@ export default async function Book({ params: { isbn } }: Props) {
     image,
     price,
   } = await getBook(isbn)
+
   return (
     <main>
       <h1 className="text-center">{title}</h1>
@@ -82,3 +82,5 @@ export default async function Book({ params: { isbn } }: Props) {
     </main>
   )
 }
+
+export default BookPage
