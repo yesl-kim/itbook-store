@@ -1,4 +1,4 @@
-import Search from './ui/Search/Search'
+import Search from 'components/search/search'
 
 export default function Home() {
   return (
