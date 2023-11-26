@@ -3,6 +3,7 @@ import Search from 'components/search/search'
 import BookList from './components/book-list'
 import { parseKeyword } from '../lib/parser'
 import { searchBooks } from '@/app/actions/search-books'
+import LoadMore from './components/load-more'
 
 interface Props {
   searchParams?: {
@@ -18,10 +19,7 @@ const BooksPage = async ({ searchParams }: Props) => {
     throw new Error('잘못된 접근, redirecting to home...')
   }
 
-  const { includeKeywords, nonIncludeKeywords } = useMemo(
-    () => parseKeyword(query),
-    [query]
-  )
+  const { includeKeywords, nonIncludeKeywords } = parseKeyword(query)
   const books = await searchBooks(includeKeywords, nonIncludeKeywords)
 
   return (
@@ -32,6 +30,7 @@ const BooksPage = async ({ searchParams }: Props) => {
       <main>
         <Suspense fallback={<div>loading</div>}>
           <BookList list={books} />
+          <LoadMore />
         </Suspense>
       </main>
     </div>
