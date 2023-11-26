@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import BookCard from './book-card'
 
 interface Props {
   list: BooksItem[]
@@ -11,35 +12,9 @@ interface Props {
 const PATH = 'books'
 const BookList = ({ list }: Props) => (
   <ul className="flex flex-wrap gap-[8%]">
-    {list.map(({ title, subtitle, image, url, isbn13 }) => (
-      <li key={isbn13} className="w-[28%] mb-10">
-        <Link href={`${PATH}/${isbn13}`}>
-          <div className="w-full h-[240px] relative mb-5">
-            <Image
-              alt={`도서 "${title}"의 이미지`}
-              src={image}
-              fill
-              sizes="(min-width: 808px) 50vw, 100vw"
-              style={{
-                objectFit: 'cover',
-              }}
-              priority
-            />
-          </div>
-          <div>
-            <h2>{title}</h2>
-            <div>
-              <p>
-                <span>subtitle: </span>
-                {subtitle}
-              </p>
-              <p>
-                <span>url: </span>
-                {url}
-              </p>
-            </div>
-          </div>
-        </Link>
+    {list.map((book) => (
+      <li key={book.isbn13} className="w-[28%] mb-10">
+        <BookCard book={book} />
       </li>
     ))}
   </ul>
