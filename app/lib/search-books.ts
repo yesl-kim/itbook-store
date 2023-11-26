@@ -1,5 +1,3 @@
-'use server'
-
 const HOST = 'https://api.itbook.store/1.0'
 
 const includesByIsbn = (books: BooksItem[], isbn: string) =>

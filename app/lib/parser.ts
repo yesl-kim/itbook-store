@@ -24,6 +24,5 @@ export const parseKeyword = (str: string) => {
 
   const total = include.length + nonInclude.length
 
-  console.log(parsed)
   return { includeKeywords: include, nonIncludeKeywords: nonInclude, total }
 }

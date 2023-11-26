@@ -17,7 +17,7 @@ const LoadMore = () => {
 
   return (
     <>
-      <BookList list={books} />
+      {/* <BookList list={books} /> */}
       <div ref={ref}>
         {loading && <p className="text-center">불러오는 중...</p>}
       </div>

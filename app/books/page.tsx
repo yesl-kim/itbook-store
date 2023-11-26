@@ -1,9 +1,14 @@
-import { Suspense, useMemo } from 'react'
+import { Suspense } from 'react'
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query'
+
 import Search from 'components/search/search'
 import BookList from './components/book-list'
 import { parseKeyword } from '../lib/parser'
-import { searchBooks } from '@/app/actions/search-books'
-import LoadMore from './components/load-more'
+import { searchBooks } from '@/app/lib/search-books'
 
 interface Props {
   searchParams?: {
@@ -19,8 +24,13 @@ const BooksPage = async ({ searchParams }: Props) => {
     throw new Error('잘못된 접근, redirecting to home...')
   }
 
+  const queryClient = new QueryClient()
   const { includeKeywords, nonIncludeKeywords } = parseKeyword(query)
-  const books = await searchBooks(includeKeywords, nonIncludeKeywords)
+
+  await queryClient.prefetchQuery({
+    queryKey: ['books'],
+    queryFn: () => searchBooks(includeKeywords, nonIncludeKeywords),
+  })
 
   return (
     <div>
@@ -28,10 +38,11 @@ const BooksPage = async ({ searchParams }: Props) => {
         <Search />
       </header>
       <main>
-        <Suspense fallback={<div>loading</div>}>
-          <BookList list={books} />
-          <LoadMore />
-        </Suspense>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <Suspense fallback={<div className="h-[100px] bg-blue-600 w-full" />}>
+            <BookList />
+          </Suspense>
+        </HydrationBoundary>
       </main>
     </div>
   )
