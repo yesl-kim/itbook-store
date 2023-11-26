@@ -7,7 +7,6 @@ import {
 
 import Search from 'components/search/search'
 import BookList from './components/book-list'
-import { parseKeyword } from '../lib/parser'
 import { searchBooks } from '@/app/lib/search-books'
 
 interface Props {
@@ -25,11 +24,10 @@ const BooksPage = async ({ searchParams }: Props) => {
   }
 
   const queryClient = new QueryClient()
-  const { includeKeywords, nonIncludeKeywords } = parseKeyword(query)
-
-  await queryClient.prefetchQuery({
+  await queryClient.prefetchInfiniteQuery({
     queryKey: ['books'],
-    queryFn: () => searchBooks(includeKeywords, nonIncludeKeywords),
+    queryFn: () => searchBooks(query, 1),
+    initialPageParam: 1,
   })
 
   return (
@@ -38,11 +36,11 @@ const BooksPage = async ({ searchParams }: Props) => {
         <Search />
       </header>
       <main>
-        <HydrationBoundary state={dehydrate(queryClient)}>
-          <Suspense fallback={<div className="h-[100px] bg-blue-600 w-full" />}>
+        <Suspense fallback={<div className="h-[100px] bg-blue-600 w-full" />}>
+          <HydrationBoundary state={dehydrate(queryClient)}>
             <BookList />
-          </Suspense>
-        </HydrationBoundary>
+          </HydrationBoundary>
+        </Suspense>
       </main>
     </div>
   )
