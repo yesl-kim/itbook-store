@@ -35,6 +35,14 @@ const Books = ({ query }: Props) => {
     }
   }, [fetchNextPage, inView])
 
+  if (books.length === 0) {
+    return (
+      <p className="text-center">
+        &quot;{query}&quot; 에 해당하는 도서 결과를 찾을 수 없습니다.
+      </p>
+    )
+  }
+
   return (
     <>
       <ul className="flex flex-wrap gap-[8%]">
