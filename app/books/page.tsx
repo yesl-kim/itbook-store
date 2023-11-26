@@ -5,10 +5,10 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 
-import Search from 'components/search/search'
 import BookList from './components/book-list'
 import { searchBooks } from '@/app/lib/search-books'
 import { redirect } from 'next/navigation'
+import Loading from './loading'
 
 interface Props {
   searchParams?: {
@@ -30,18 +30,11 @@ const BooksPage = async ({ searchParams }: Props) => {
   })
 
   return (
-    <div>
-      <header className="mb-10">
-        <Search />
-      </header>
-      <main>
-        <Suspense fallback={<div className="h-[100px] bg-blue-600 w-full" />}>
-          <HydrationBoundary state={dehydrate(queryClient)}>
-            <BookList query={query} />
-          </HydrationBoundary>
-        </Suspense>
-      </main>
-    </div>
+    <Suspense fallback={<Loading />}>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <BookList query={query} />
+      </HydrationBoundary>
+    </Suspense>
   )
 }
 

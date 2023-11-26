@@ -6,7 +6,7 @@ interface Props {
   book: BooksItem
 }
 
-const PATH = 'books'
+const PATH = '/book'
 const BookCard = ({ book: { isbn13, title, subtitle, url, image } }: Props) => {
   const { ref, inView } = useInView({ threshold: 0.1 })
   return (

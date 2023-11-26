@@ -35,7 +35,6 @@ const BookPage = async ({ params: { isbn } }: Props) => {
 
   return (
     <main>
-      <h1 className="text-center">{title}</h1>
       <div className="relative h-[300px]">
         <Image
           alt={`도서 "${title}"의 이미지`}
@@ -47,6 +46,7 @@ const BookPage = async ({ params: { isbn } }: Props) => {
           }}
         />
       </div>
+      <h1 className="text-center my-5 text-lg">{title}</h1>
       <table>
         <tbody>
           <tr>
