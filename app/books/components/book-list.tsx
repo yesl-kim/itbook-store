@@ -4,18 +4,15 @@ import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
 
 import { useInView } from 'react-intersection-observer'
 import BookCard from './book-card'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { searchBooks } from '@/app/lib/search-books'
-import { useSearchParams } from 'next/navigation'
+
+interface Props {
+  query: string
+}
 
 // TODO: 최소한 클릭할 수 있는 ui라는 건 알 수 있게
-const Books = () => {
-  const params = useSearchParams()
-  const query = useMemo(() => params.get('query'), [params])
-  if (!query) {
-    throw new Error('잘못된 접근, 검색어 입력해주삼')
-  }
-
+const Books = ({ query }: Props) => {
   const {
     data: { pages: books },
     fetchNextPage,
@@ -37,6 +34,14 @@ const Books = () => {
       fetchNextPage()
     }
   }, [fetchNextPage, inView])
+
+  if (books.length === 0) {
+    return (
+      <p className="text-center">
+        &quot;{query}&quot; 에 해당하는 도서 결과를 찾을 수 없습니다.
+      </p>
+    )
+  }
 
   return (
     <>
