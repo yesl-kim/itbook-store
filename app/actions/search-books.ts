@@ -27,9 +27,12 @@ const getBooks = async (query: string, page = 1): Promise<BooksResponse> => {
 
 export const searchBooks = async (
   includedKeywords: string[],
-  nonIncludedKeyword?: string[]
+  nonIncludedKeyword?: string[],
+  page = 1
 ) => {
-  const included = await Promise.all(includedKeywords.map((k) => getBooks(k)))
+  const included = await Promise.all(
+    includedKeywords.map((k) => getBooks(k, page))
+  )
   const includedBooks = union(included)
 
   if (!nonIncludedKeyword || nonIncludedKeyword.length === 0) {
@@ -37,7 +40,7 @@ export const searchBooks = async (
   }
 
   const nonIncluded = await Promise.all(
-    nonIncludedKeyword.map((k) => getBooks(k))
+    nonIncludedKeyword.map((k) => getBooks(k, page))
   )
   const nonIncludedBooks = union(nonIncluded)
 
