@@ -1,48 +1,56 @@
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image'
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
 
-interface Props {
-  list: BooksItem[]
-}
+import { useInView } from 'react-intersection-observer'
+import BookCard from './book-card'
+import { useEffect, useMemo } from 'react'
+import { searchBooks } from '@/app/lib/search-books'
+import { useSearchParams } from 'next/navigation'
 
 // TODO: 최소한 클릭할 수 있는 ui라는 건 알 수 있게
-const PATH = 'books'
-const BookList = ({ list }: Props) => (
-  <ul className="flex flex-wrap gap-[8%]">
-    {list.map(({ title, subtitle, image, url, isbn13 }) => (
-      <li key={isbn13} className="w-[28%] mb-10">
-        <Link href={`${PATH}/${isbn13}`}>
-          <div className="w-full h-[240px] relative mb-5">
-            <Image
-              alt={`도서 "${title}"의 이미지`}
-              src={image}
-              fill
-              sizes="(min-width: 808px) 50vw, 100vw"
-              style={{
-                objectFit: 'cover',
-              }}
-              priority
-            />
-          </div>
-          <div>
-            <h2>{title}</h2>
-            <div>
-              <p>
-                <span>subtitle: </span>
-                {subtitle}
-              </p>
-              <p>
-                <span>url: </span>
-                {url}
-              </p>
-            </div>
-          </div>
-        </Link>
-      </li>
-    ))}
-  </ul>
-)
+const Books = () => {
+  const params = useSearchParams()
+  const query = useMemo(() => params.get('query'), [params])
+  if (!query) {
+    throw new Error('잘못된 접근, 검색어 입력해주삼')
+  }
 
-export default BookList
+  const {
+    data: { pages: books },
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useSuspenseInfiniteQuery({
+    queryKey: ['books', query],
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) => searchBooks(query, pageParam),
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    select: (data) => ({
+      pageParams: data.pageParams,
+      pages: data.pages.flatMap((page) => page.books),
+    }),
+  })
+
+  const { ref, inView } = useInView()
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage()
+    }
+  }, [fetchNextPage, inView])
+
+  return (
+    <>
+      <ul className="flex flex-wrap gap-[8%]">
+        {books.map((book) => (
+          <li key={book.isbn13} className="w-[28%] mb-10">
+            <BookCard book={book} />
+          </li>
+        ))}
+      </ul>
+      <div ref={ref} />
+      {isFetchingNextPage && <p className="text-center py-5">불러오는 중...</p>}
+    </>
+  )
+}
+
+export default Books

@@ -1,4 +1,4 @@
-'use server'
+import { parseKeyword } from './parser'
 
 const HOST = 'https://api.itbook.store/1.0'
 
@@ -25,26 +25,31 @@ const getBooks = async (query: string, page = 1): Promise<BooksResponse> => {
   return res.json()
 }
 
-export const searchBooks = async (
-  includedKeywords: string[],
-  nonIncludedKeyword?: string[],
-  page = 1
-) => {
+// TODO: 다음 페이지 계산 다시
+export const searchBooks = async (query: string, page = 1) => {
+  const { includeKeywords, nonIncludeKeywords } = parseKeyword(query)
   const included = await Promise.all(
-    includedKeywords.map((k) => getBooks(k, page))
+    includeKeywords.map((k) => getBooks(k, page))
   )
   const includedBooks = union(included)
 
-  if (!nonIncludedKeyword || nonIncludedKeyword.length === 0) {
-    return includedBooks
+  if (nonIncludeKeywords.length === 0) {
+    return {
+      nextPage: includedBooks.length > 0 ? page + 1 : null,
+      books: includedBooks,
+    }
   }
 
   const nonIncluded = await Promise.all(
-    nonIncludedKeyword.map((k) => getBooks(k, page))
+    nonIncludeKeywords.map((k) => getBooks(k, page))
   )
   const nonIncludedBooks = union(nonIncluded)
 
-  return includedBooks.filter(
+  const books = includedBooks.filter(
     ({ isbn13 }) => !includesByIsbn(nonIncludedBooks, isbn13)
   )
+  return {
+    nextPage: page + 1,
+    books,
+  }
 }
