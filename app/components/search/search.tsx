@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { validateMaxKeywords } from './lib/validate'
+import { validateMaxKeywords } from './validate'
 
 interface SearchForm {
   keyword: string
