@@ -18,10 +18,10 @@
         "name": "next"
       }
     ],
-    "paths": {
-      "@/*": ["./*"],
-      "@/components/*": ["./app/components/*"]
-    }
+    // "paths": {
+    //   "@/*": ["./app/*"]
+    // },
+    "baseUrl": "./app/"
   },
   "include": [
     "next-env.d.ts",

@@ -1,4 +1,4 @@
-import { parseKeyword } from '@/app/lib/parser'
+import { parseKeyword } from 'lib/parser'
 
 /**
  * @param input 검색어
