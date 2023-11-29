@@ -1,6 +1,6 @@
-import Search from '@/app/components/search/search'
+import Search from 'components/search/search'
 
-const Layout = ({ children }: { children: React.ReactNode }) => (
+const Layout = ({ children }: ComponentWithChildren) => (
   <div>
     <header className="mb-10">
       <Search />

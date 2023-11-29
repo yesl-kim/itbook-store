@@ -1,23 +1,22 @@
 import { Suspense } from 'react'
+import { redirect } from 'next/navigation'
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query'
 
+import { parameters } from 'constants/routes'
+import { searchBooks } from 'lib/search-books'
 import BookList from './components/book-list'
-import { searchBooks } from '@/app/lib/search-books'
-import { redirect } from 'next/navigation'
 import Loading from './loading'
 
 interface Props {
-  searchParams?: {
-    query?: string
-  }
+  searchParams?: SearchParams
 }
 
 const BooksPage = async ({ searchParams }: Props) => {
-  const query = searchParams?.query
+  const query = searchParams?.[parameters.query]
   if (!query) {
     redirect('/')
   }

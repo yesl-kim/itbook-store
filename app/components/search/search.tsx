@@ -1,15 +1,11 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { validateMaxKeywords } from './lib/validate'
 
-interface SearchForm {
-  keyword: string
-}
+import { parameters, routes } from 'constants/routes'
+import { validateMaxKeywords } from './validate'
 
-const PATH = '/books'
 export default function Search() {
   const searchParams = useSearchParams()
   const { push } = useRouter()
@@ -17,16 +13,16 @@ export default function Search() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SearchForm>({
+  } = useForm<SearchParams>({
     defaultValues: {
-      keyword: searchParams.get('query')?.toString(),
+      query: searchParams.get(parameters.query)?.toString(),
     },
   })
 
-  const onSubmit: SubmitHandler<SearchForm> = ({ keyword }) => {
+  const onSubmit: SubmitHandler<SearchParams> = ({ query }) => {
     const params = new URLSearchParams()
-    params.set('query', keyword)
-    push(`${PATH}?${params.toString()}`)
+    params.set(parameters.query, query)
+    push(`${routes.search_books}?${params.toString()}`)
   }
 
   return (
@@ -36,7 +32,7 @@ export default function Search() {
         onSubmit={handleSubmit(onSubmit)}
       >
         <input
-          {...register('keyword', {
+          {...register('query', {
             required: true,
             validate: (v) => validateMaxKeywords(v),
           })}
@@ -46,7 +42,7 @@ export default function Search() {
         />
         <input type="submit" value="검색" />
       </form>
-      <p className="text-sm text-red-400">{errors.keyword?.message}</p>
+      <p className="text-sm text-red-400">{errors.query?.message}</p>
     </>
   )
 }

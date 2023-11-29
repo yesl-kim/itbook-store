@@ -1,17 +1,17 @@
 'use client'
 
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
-
-import { useInView } from 'react-intersection-observer'
-import BookCard from './book-card'
 import { useEffect } from 'react'
-import { searchBooks } from '@/app/lib/search-books'
+
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
+import { useInView } from 'react-intersection-observer'
+
+import { searchBooks } from 'lib/search-books'
+import BookCard from './book-card'
 
 interface Props {
   query: string
 }
 
-// TODO: 최소한 클릭할 수 있는 ui라는 건 알 수 있게
 const Books = ({ query }: Props) => {
   const {
     data: { pages: books },
