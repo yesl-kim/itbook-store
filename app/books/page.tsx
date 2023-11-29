@@ -1,13 +1,13 @@
 import { Suspense } from 'react'
+import { redirect } from 'next/navigation'
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query'
 
-import BookList from './components/book-list'
 import { searchBooks } from 'lib/search-books'
-import { redirect } from 'next/navigation'
+import BookList from './components/book-list'
 import Loading from './loading'
 
 interface Props {

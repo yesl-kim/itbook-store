@@ -1,11 +1,12 @@
 'use client'
 
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
-
-import { useInView } from 'react-intersection-observer'
-import BookCard from './book-card'
 import { useEffect } from 'react'
+
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
+import { useInView } from 'react-intersection-observer'
+
 import { searchBooks } from 'lib/search-books'
+import BookCard from './book-card'
 
 interface Props {
   query: string
