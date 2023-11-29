@@ -1,7 +1,6 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { validateMaxKeywords } from './validate'
 

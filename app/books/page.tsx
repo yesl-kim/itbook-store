@@ -5,7 +5,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 
-import Search from 'components/search/search'
+import Search from '@/components/search/search'
 import BookList from './components/book-list'
 import { searchBooks } from '@/app/lib/search-books'
 
