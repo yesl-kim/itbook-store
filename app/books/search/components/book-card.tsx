@@ -1,17 +1,17 @@
 import Image from 'next/image'
 import Link from 'next/link'
-
 import { useInView } from 'react-intersection-observer'
+
+import { routes } from 'constants/routes'
 
 interface Props {
   book: BooksItem
 }
 
-const PATH = '/book'
 const BookCard = ({ book: { isbn13, title, subtitle, url, image } }: Props) => {
   const { ref, inView } = useInView({ threshold: 0.1 })
   return (
-    <Link href={`${PATH}/${isbn13}`}>
+    <Link href={`${routes.book}/${isbn13}`}>
       <div ref={ref} className="h-[400px] flex flex-col bg-yellow-50 gap-5">
         {inView && (
           <>

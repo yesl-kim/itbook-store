@@ -1,13 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import useEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import mockRouter from 'next-router-mock'
 
-jest.mock('next/navigation', () => jest.requireActual('next-router-mock'))
-
+import { routes } from 'constants/routes'
 import Search from './search'
 
-const PATH = '/books'
+jest.mock('next/navigation', () => jest.requireActual('next-router-mock'))
+
 describe('search component', () => {
   it('검색하면 입력값이 쿼리 파라미터("query")에 담겨 "books/"로 이동한다', () => {
     mockRouter.push('/')
@@ -18,8 +17,8 @@ describe('search component', () => {
     fireEvent.change(search, { target: { value: input } })
 
     expect(mockRouter).toMatchObject({
-      asPath: `${PATH}?query=${input}`,
-      pathname: PATH,
+      asPath: `${routes.search_books}?query=${input}`,
+      pathname: routes.search_books,
       query: { query: input },
     })
   })

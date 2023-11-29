@@ -6,18 +6,17 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 
+import { parameters } from 'constants/routes'
 import { searchBooks } from 'lib/search-books'
 import BookList from './components/book-list'
 import Loading from './loading'
 
 interface Props {
-  searchParams?: {
-    query?: string
-  }
+  searchParams?: SearchParams
 }
 
 const BooksPage = async ({ searchParams }: Props) => {
-  const query = searchParams?.query
+  const query = searchParams?.[parameters.query]
   if (!query) {
     redirect('/')
   }
