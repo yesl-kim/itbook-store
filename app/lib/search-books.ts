@@ -19,13 +19,12 @@ const union = (arr: BooksResponse[]) =>
 const getBooks = async (query: string, page = 1): Promise<BooksResponse> => {
   const res = await fetch(`${HOST}/search/${query}/${page}`)
   if (!res.ok) {
-    // TODO: error handling
     throw new Error(res.statusText)
   }
   return res.json()
 }
 
-// TODO: 다음 페이지 계산 다시
+// TODO: nextPage 계산 다시
 export const searchBooks = async (query: string, page = 1) => {
   const { includeKeywords, nonIncludeKeywords } = parseKeyword(query)
   const included = await Promise.all(

@@ -12,7 +12,6 @@ interface Props {
   query: string
 }
 
-// TODO: 최소한 클릭할 수 있는 ui라는 건 알 수 있게
 const Books = ({ query }: Props) => {
   const {
     data: { pages: books },
